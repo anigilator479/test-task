@@ -3,12 +3,13 @@ package com.example.testtask.service;
 import com.example.testtask.dto.CustomerRequestDto;
 import com.example.testtask.dto.CustomerResponseDto;
 import com.example.testtask.dto.CustomerUpdateRequestDto;
+import com.example.testtask.exception.CustomerNotFoundException;
+import com.example.testtask.exception.DifferentIdValuesException;
 import com.example.testtask.mapper.CustomerMapper;
 import com.example.testtask.mapper.impl.CustomerMapperImpl;
 import com.example.testtask.model.Customer;
 import com.example.testtask.repository.CustomerRepository;
 import com.example.testtask.service.impl.CustomerServiceImpl;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -67,7 +68,7 @@ public class CustomerServiceTest {
 
         Mockito.when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(EntityNotFoundException.class,
+        Exception exception = Assertions.assertThrows(CustomerNotFoundException.class,
                 () -> customerService.getById(customerId));
 
         String expected = String.format("Can't find customer with this id: %d", customerId);
@@ -105,8 +106,6 @@ public class CustomerServiceTest {
         );
 
         CustomerResponseDto actual = customerService.save(customerRequestDto);
-        System.out.println(expected);
-        System.out.println(actual);
 
         Assertions.assertTrue(EqualsBuilder.reflectionEquals(expected, actual, "id"));
     }
@@ -172,7 +171,7 @@ public class CustomerServiceTest {
                 "+88005553"
         );
 
-        Assertions.assertThrows(IllegalArgumentException.class,
+        Assertions.assertThrows(DifferentIdValuesException.class,
                 () -> customerService.updateById(customerRequestDto, customerId));
     }
 }

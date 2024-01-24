@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +24,7 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long created;
 
     @Column(nullable = false)
@@ -38,5 +40,16 @@ public class Customer {
     private String phone;
 
     @Column(nullable = false, name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive = true;
+
+    @PrePersist
+    public void prePersist() {
+        this.created = System.currentTimeMillis();
+        this.updated = this.created;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updated = System.currentTimeMillis();
+    }
 }

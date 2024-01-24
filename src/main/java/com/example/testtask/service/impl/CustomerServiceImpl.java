@@ -3,11 +3,12 @@ package com.example.testtask.service.impl;
 import com.example.testtask.dto.CustomerRequestDto;
 import com.example.testtask.dto.CustomerResponseDto;
 import com.example.testtask.dto.CustomerUpdateRequestDto;
+import com.example.testtask.exception.CustomerNotFoundException;
+import com.example.testtask.exception.DifferentIdValuesException;
 import com.example.testtask.mapper.CustomerMapper;
 import com.example.testtask.model.Customer;
 import com.example.testtask.repository.CustomerRepository;
 import com.example.testtask.service.CustomerService;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponseDto save(CustomerRequestDto customerRequestDto) {
         Customer customer = customerMapper.toModel(customerRequestDto);
-        customer.setIsActive(true);
-        customer.setCreated(System.currentTimeMillis());
-        customer.setUpdated(System.currentTimeMillis());
         return customerMapper.toResponse(customerRepository.save(customer));
     }
 
@@ -40,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponseDto getById(Long id) {
         return customerRepository.findById(id)
                 .map(customerMapper::toResponse)
-                .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new CustomerNotFoundException(
                         String.format("Can't find customer with this id: %d", id)));
     }
 
@@ -49,17 +47,16 @@ public class CustomerServiceImpl implements CustomerService {
         validateIdFields(customerRequestDto.id(), id);
 
         Customer customer = customerRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(
+                new CustomerNotFoundException(
                         String.format("Can't update customer with this id: %d", id)));
 
         customerMapper.updateCustomer(customerRequestDto, customer);
-        customer.setUpdated(System.currentTimeMillis());
         return customerMapper.toResponse(customerRepository.save(customer));
     }
 
     private static void validateIdFields(Long requestDtoId, Long id) {
         if (!Objects.equals(requestDtoId, id)) {
-            throw new IllegalArgumentException(String.format(
+            throw new DifferentIdValuesException(String.format(
                     "Id values can't be different: %d and %d", requestDtoId, id));
         }
     }

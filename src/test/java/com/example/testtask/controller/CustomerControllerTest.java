@@ -159,8 +159,7 @@ public class CustomerControllerTest {
 
         List<CustomerResponseDto> actual = objectMapper.readerForListOf(CustomerResponseDto.class)
                 .readValue(result.getResponse().getContentAsString());
-        System.out.println(expected);
-        System.out.println(actual);
+
         assertNotNull(actual);
         for (int i = 0; i < expected.size(); i++) {
             Assertions.assertTrue(EqualsBuilder.reflectionEquals(
