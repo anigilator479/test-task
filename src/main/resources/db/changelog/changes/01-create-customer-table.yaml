@@ -35,7 +35,7 @@ databaseChangeLog:
                     unique: true
               - column:
                   name: phone
-                  type: VARCHAR(16)
+                  type: VARCHAR(14)
                   constraints:
                     unique: true
               - column:

@@ -11,7 +11,7 @@ public record CustomerRequestDto(
         @Length(min = 2, max = 100)
         String email,
         @Pattern(regexp = "^\\+\\d+$", message = "Invalid phone number")
-        @Length(min = 6, max = 16)
+        @Length(min = 6, max = 14)
         String phone
 ) {
 }

@@ -8,7 +8,7 @@ public record CustomerUpdateRequestDto(
         @Length(min = 2, max = 50)
         String fullName,
         @Pattern(regexp = "^\\+\\d+$", message = "Invalid phone number")
-        @Length(min = 6, max = 16)
+        @Length(min = 6, max = 14)
         String phone
 ) {
 
